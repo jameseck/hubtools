@@ -1,0 +1,14 @@
+#!/bin/bash
+
+[ ! -f Dockerfile ] && exit 0
+[ ! -f `which dockerfile_lint` ] && exit 0
+
+dockerlint=$(dockerfile_lint)
+
+if [ "$?" != "0" ]; then
+  echo -e "\e[31mDockerfile lint check FAILED\e[0m"
+  echo -e "$dockerlint"
+  echo
+  echo -e "\e[31mCOMMIT ABORTED!\e[0m"
+  exit 1
+fi

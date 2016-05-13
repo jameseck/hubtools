@@ -47,19 +47,19 @@ def format_build_status (status, msg)
 end
 
 build_status_codes = {
-  "-2" => "exception",
-  "-1" => "error",
-  0    => "pending",
-  1    => "claimed",
-  2    => "started",
-  3    => "cloned",
-  4    => "readme",
-  5    => "dockerfile",
-  6    => "built",
-  7    => "bundled",
-  8    => "uploaded",
-  9    => "pushed",
-  10   => "done"
+  -2 => "exception",
+  -1 => "error",
+  0  => "pending",
+  1  => "claimed",
+  2  => "started",
+  3  => "cloned",
+  4  => "readme",
+  5  => "dockerfile",
+  6  => "built",
+  7  => "bundled",
+  8  => "uploaded",
+  9  => "pushed",
+  10 => "done"
 }
 
 
@@ -95,6 +95,11 @@ get_page(repolisturl)
     status = nil
   end
   #puts "\e[32m#{last_updated} #{image['name']}\e[0m\n"
-  puts format_build_status status, "#{last_updated} #{image['name']}"
+  if status != 10 then
+    status_desc = "Status is #{status} - #{build_status_codes[status]}"
+  else
+    status_desc = ""
+  end
+  puts format_build_status status, "#{last_updated} #{image['name']} #{status_desc}"
 end
 
