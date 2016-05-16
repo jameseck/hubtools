@@ -11,7 +11,6 @@ def format_build_status (status, msg)
   green = 32
   yellow = 33
   blue = 34
-  pink = 35
   light_blue = 36
 
   case status
@@ -43,6 +42,8 @@ def format_build_status (status, msg)
       "\e[#{light_blue}m#{msg}\e[0m"
     when 10 # done
       "\e[#{green}m#{msg}\e[0m"
+    when 99 # never
+      "\e[1;#{red}m#{msg}\e[0m"
   end
 end
 
@@ -59,12 +60,11 @@ build_status_codes = {
   7  => "bundled",
   8  => "uploaded",
   9  => "pushed",
-  10 => "done"
+  10 => "done",
+  98 => "Image not found",
+  99 => "never",
 }
 
-
-#PP.pp JSON.parse `curl -sSL -H 'Content-Type: application/json' https://hub.docker.com/v2/repositories/1and1internet/ubuntu-16`
-#PP.pp JSON.parse `curl -sSL -H 'Content-Type: application/json' https://hub.docker.com/v2/repositories/1and1internet/ubuntu-16/buildhistory/`
 
 repolisturl = 'https://hub.docker.com/v2/repositories/1and1internet'
 
@@ -82,24 +82,47 @@ def get_page (url)
   @results
 end
 
-get_page(repolisturl)
+if ARGV.empty? then
+  get_page(repolisturl)
+else
+  ARGV.each do |arg|
+    @results << { 'name' => arg }
+  end
+end
+
+
 @results.sort_by! { |hsh| hsh['name'] }
 
+print "Fetching build status [#{' ' * @results.count}]"
+print "\b" * (@results.count + 1)
+
+build_status = []
+
 @results.each do |image|
-  buildhistory = JSON.parse(`#{@curl_cmd} #{repolisturl}/#{image['name']}/buildhistory`)
+  print "\e[32m.\e[0m"
+  $stdout.flush
+  image_status = { 'name' => image['name'] }
+
+  build_result = `#{@curl_cmd} #{repolisturl}/#{image['name']}/buildhistory`
+  buildhistory = JSON.parse(build_result)
+
   if buildhistory['results'] then
-    last_updated = Time.parse(buildhistory['results'][0]['last_updated'])
-    status = buildhistory['results'][0]['status']
+    image_status['last_updated'] = Time.parse(buildhistory['results'][0]['last_updated'])
+    image_status['build_status'] = buildhistory['results'][0]['status']
   else
-    last_updated = nil
-    status = nil
+    image_status['last_updated'] = Time.at(0)
+    image_status['build_status'] = 99
   end
-  #puts "\e[32m#{last_updated} #{image['name']}\e[0m\n"
-  if status != 10 then
-    status_desc = "Status is #{status} - #{build_status_codes[status]}"
-  else
+  build_status << image_status
+end
+puts "\n\n"
+
+build_status.sort_by { |hsh| hsh['last_updated'] }.each do |img|
+  if img['build_status'] == 10 then
     status_desc = ""
+  else
+    status_desc = "Status is #{img['build_status']} - #{build_status_codes[img['build_status']]}"
   end
-  puts format_build_status status, "#{last_updated} #{image['name']} #{status_desc}"
+  puts format_build_status img['build_status'], "#{img['last_updated']} #{img['name']} #{status_desc}"
 end
 

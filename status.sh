@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ "$1" == "pull" ]; then
+  [ "$2" == "" ] && par=8 || par=$2
+  find -maxdepth 1 -type d | grep -v ^\.$ | xargs -P $par -I{} bash -c '[ -d {}/.git ] && echo "Pulling {}" && git -C {} pull'
+  echo
+fi
+
 if [ "$1" == "fetch" ]; then
   [ "$2" == "" ] && par=8 || par=$2
   find -maxdepth 1 -type d | grep -v ^\.$ | xargs -P $par -I{} bash -c '[ -d {}/.git ] && echo "Fetching {}" && git -C {} fetch'
