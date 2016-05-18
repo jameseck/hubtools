@@ -10,14 +10,15 @@ gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB8
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "~/.rvm/scripts/rvm" ]] && source "~/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-# At this point you need to either run "source ~/.rvm/scripts/rvm" or reload
-
 # If you want a very long and pretty shell prompt, you can add the following to ~/.bashrc too:
 export PS1="\[\033[01;34m\]\[\033[01;32m\]\u@\h\[\033[00m\]:\$([ -f ~/.rvm/bin/rvm-prompt ] && ~/.rvm/bin/rvm-prompt) \[\033[01;32m\]\w\[\033[00;33m\]\$(type __git_ps1 2>/dev/null| head -1 | grep -q '__git_ps1 is a function' &&__git_ps1 \" (%s)\") \[\033[01;36m\]\$\[\033[00m\] "
 # Also put .git-prompt.sh in ~/
 
-# Then run:
+# At this point you need to either run "source ~/.rvm/scripts/rvm" or reload
 
+# Then run:
+rvm install ruby-2.3.1
+# You may need to enter your password for sudo at this point to install some dependency devel packages
 gem install bundle
 
 # From the directory containing the Gemfile from this repo:
@@ -28,4 +29,5 @@ bundle install
 # From any image repo, you should be able to run:
 
 docker-compose build
+export IMAGE=<image_name_from_docker_compose_yaml>
 rspec spec/spec_helper.rb
