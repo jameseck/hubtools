@@ -1,0 +1,25 @@
+# Notes related to running serverspec with rvm for image testing
+
+# From: https://rvm.io/rvm/install
+
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+\curl -sSL https://get.rvm.io | bash
+
+# Add the following to ~/.bashrc:
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+[[ -s "~/.rvm/scripts/rvm" ]] && source "~/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+# Then run:
+
+gem install bundle
+
+# From the directory containing the Gemfile from this repo:
+bundle install
+
+# This should install all the gems required to run serverspec
+
+# From any image repo, you should be able to run:
+
+docker-compose build
+rspec spec/spec_helper.rb
