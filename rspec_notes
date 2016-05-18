@@ -12,7 +12,8 @@ export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 
 # If you want a very long and pretty shell prompt, you can add the following to ~/.bashrc too:
 export PS1="\[\033[01;34m\]\[\033[01;32m\]\u@\h\[\033[00m\]:\$([ -f ~/.rvm/bin/rvm-prompt ] && ~/.rvm/bin/rvm-prompt) \[\033[01;32m\]\w\[\033[00;33m\]\$(type __git_ps1 2>/dev/null| head -1 | grep -q '__git_ps1 is a function' &&__git_ps1 \" (%s)\") \[\033[01;36m\]\$\[\033[00m\] "
-# Also put .git-prompt.sh in ~/
+# Also put .git-prompt.sh in ~/ and add the following to ~/.bashrc:
+source ~/.git-prompt.sh
 
 # At this point you need to either run "source ~/.rvm/scripts/rvm" or reload
 
