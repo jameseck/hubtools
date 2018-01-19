@@ -66,7 +66,7 @@ build_status_codes = {
 }
 
 
-repolisturl = 'https://hub.docker.com/v2/repositories/1and1internet'
+repolisturl = 'https://hub.docker.com/v2/repositories/jameseckersall'
 
 @results = []
 
